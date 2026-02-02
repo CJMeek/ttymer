@@ -42,6 +42,7 @@
 - Remove examples and add SQLite db for storing tasks
 - Add breaks into timer
 - Refactor timer code
+- Progress bar is janky too, need to fix to make more fluid
 - Write tests
 
  ## Project structure

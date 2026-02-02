@@ -67,6 +67,8 @@ func (m TimerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 	case tea.KeyMsg:
 		switch msg.String() {
+		case "q":
+			return m, tea.Quit
 		case "p":
 			m.running = !m.running
 			if !m.running {
