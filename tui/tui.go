@@ -47,28 +47,46 @@ func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.timerView = NewTimerView(total)
 		m.state = timerView
 		return m, m.timerView.Init()
+	case TimerBackMsg:
+		m.state = taskView
+		return m, nil
 	}
 
+	var cmd tea.Cmd
+	var cmds []tea.Cmd
 	switch m.state {
 	case taskView:
-		var cmd tea.Cmd
-		m.taskView, cmd = m.taskView.Update(msg)
-		return m, cmd
+		newTaskView, newCmd := m.taskView.Update(msg)
+		taskViewModel, ok := newTaskView.(TaskViewModel)
+		if !ok {
+			panic("Could not perform assertion on TaskViewModel")
+		}
+		m.taskView = taskViewModel
+		cmd = newCmd
 	case taskEditView:
-		var cmd tea.Cmd
-		m.taskEditView, cmd = m.taskEditView.Update(msg)
-		return m, cmd
+		newTaskEditView, newCmd := m.taskEditView.Update(msg)
+		taskEditViewModel, ok := newTaskEditView.(TaskEditModel)
+		if !ok {
+			panic("Could not perform assertion on TaskEditViewModel")
+		}
+		m.taskEditView = taskEditViewModel
+		cmd = newCmd
 	case timerView:
-		var cmd tea.Cmd
-		m.timerView, cmd = m.timerView.Update(msg)
-		return m, cmd
+		newTimerView, newCmd := m.timerView.Update(msg)
+		timerViewModel, ok := newTimerView.(TimerView)
+		if !ok {
+			panic("Could not perform assertion on TimerView model")
+		}
+		m.timerView = timerViewModel
+		cmd = newCmd
 	}
-	return m, nil
+	cmds = append(cmds, cmd)
+	return m, tea.Batch(cmds...)
 }
 
 func InitTui() (tea.Model, tea.Cmd) {
 	tasks := []*task.Task{
-		{ID: 1, Name: "Example 1", TaskDescription: "Example 1", Duration: 3 * time.Minute},
+		{ID: 1, Name: "Example 1", TaskDescription: "Example 1", Duration: 1 * time.Minute},
 		{ID: 2, Name: "Example 2", TaskDescription: "Example 2", Duration: 1 * time.Minute},
 	}
 

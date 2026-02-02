@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/charmbracelet/bubbles/progress"
@@ -18,10 +17,11 @@ type TimerView struct {
 	bar      progress.Model
 }
 
+type TimerBackMsg struct{}
+
 func NewTimerView(total time.Duration) TimerView {
 	bar := progress.New(
-		progress.WithSolidFill("█"),
-		progress.WithWidth(40),
+		progress.WithDefaultGradient(),
 	)
 	return TimerView{
 		total:   total,
@@ -57,6 +57,7 @@ func (m TimerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			percent = float64(m.elapsed) / float64(m.total)
 			if percent > 1 {
 				percent = 1
+				m.running = false
 			}
 		}
 		cmd := m.bar.SetPercent(percent)
@@ -74,7 +75,10 @@ func (m TimerView) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if !m.running {
 				m.lastTick = time.Time{}
 			}
+		case "b":
+			return m, func() tea.Msg { return TimerBackMsg{} }
 		}
+
 	}
 	return m, nil
 }
@@ -97,6 +101,6 @@ func (m TimerView) View() string {
 		}
 	}
 
-	return "Timer\n\n" + m.bar.View() + "\n\nElapsed: " + m.elapsed.Round(time.Second).String() + "\nRemaining: " + remaining.Round(time.Second).String() + "\nPercent: " + fmt.Sprintf("%.1f%%", percent*100) + "\n"
+	return "Timer\n\n" + m.bar.View() + "\n\nElapsed: " + m.elapsed.Round(time.Second).String() + "\nRemaining: " + remaining.Round(time.Second).String()
 
 }
