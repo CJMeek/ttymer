@@ -1,4 +1,4 @@
-package taskviewui
+package tui
 
 import (
 	"ttymer/task"
@@ -15,7 +15,7 @@ type EditTaskMsg struct {
 	Task *task.Task
 }
 
-type TimerViewMsg struct {}
+type TimerViewMsg struct{}
 
 type keymap struct {
 	Create key.Binding

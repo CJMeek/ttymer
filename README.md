@@ -48,4 +48,3 @@
  - `cmd/main.go`: app entrypoint
  - `task/`: task model
  - `tui/`: Bubble Tea models and views
- - `tui/taskviewui/`: task list UI

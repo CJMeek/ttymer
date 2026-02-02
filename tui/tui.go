@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"ttymer/task"
-	"ttymer/tui/taskviewui"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -33,14 +32,14 @@ func (m MainModel) Init() tea.Cmd {
 
 func (m MainModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case taskviewui.EditTaskMsg:
+	case EditTaskMsg:
 		m.taskEditView = NewTaskEditModel(msg.Task)
 		m.state = taskEditView
 		return m, nil
 	case DoneEditingMsg:
 		m.state = taskView
 		return m, nil
-	case taskviewui.TimerViewMsg:
+	case TimerViewMsg:
 		total := time.Duration(0)
 		for _, t := range m.tasks {
 			total += t.Duration
@@ -76,7 +75,7 @@ func InitTui() (tea.Model, tea.Cmd) {
 	m := MainModel{
 		state:    taskView,
 		tasks:    tasks,
-		taskView: taskviewui.NewTaskView(tasks),
+		taskView: NewTaskView(tasks),
 	}
 	return m, nil
 }
